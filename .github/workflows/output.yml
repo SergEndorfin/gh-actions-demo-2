@@ -1,3 +1,4 @@
+name: expression and fn
 on: workflow_dispatch
 jobs:
   info:
