@@ -21,6 +21,8 @@ jobs:
   build:
     needs: lint_and_test
     runs-on: ubuntu-latest
+    outputs:
+      js-runfile: ${{ steps.publ.outputs.data }}
     steps:
       - name: Get code
         uses: actions/checkout@v7
@@ -40,7 +42,9 @@ jobs:
         with:
           name: dist-files
           path: dist
-          compression-level: '6'
+      - name: Publish JS filename
+        id: publ
+        run: find dist/assets -type f -name "*.js" -execdir echo 'data={}' >> $GIHUB_OTPUT ';'
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -56,5 +60,7 @@ jobs:
           whoami
           ls -la
           echo "<<<<<<<<"
+      - name: Output filename
+        run: echo "${{ needs.build.outputs.js-runfile }}"
       - name: Deploy
         run: echo "Deployment......MAIN........"
