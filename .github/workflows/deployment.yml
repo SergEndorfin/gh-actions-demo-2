@@ -44,7 +44,7 @@ jobs:
           path: dist
       - name: Publish JS filename
         id: publ
-        run: find dist/assets -type f -name "*.js" -execdir echo 'data={}' >> $GIHUB_OUTPUT ';'
+        run: find dist/assets -type f -name "*.js" -execdir echo 'data={}' >> $GITHUB_OUTPUT ';'
   deploy:
     needs: build
     runs-on: ubuntu-latest
