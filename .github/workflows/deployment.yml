@@ -39,13 +39,22 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: dist-files
-          path: |
-            dist
-            package.json
+          path: dist
           compression-level: '6'
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Get artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: dist-files
+      - name: Server data
+        run: |
+          echo ">>>>>>>>"
+          pwd
+          whoami
+          ls -la
+          echo "<<<<<<<<"
       - name: Deploy
         run: echo "Deployment......MAIN........"
