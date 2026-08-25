@@ -28,6 +28,21 @@ jobs:
         run: npm ci
       - name: Build project
         run: npm run build
+      - name: Server data
+        run: |
+          echo ">>>>>>>>"
+          pwd
+          whoami
+          ls -la
+          echo "<<<<<<<<"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist-files
+          path: |
+            dist
+            package.json
+          compression-level: '6'
   deploy:
     needs: build
     runs-on: ubuntu-latest
