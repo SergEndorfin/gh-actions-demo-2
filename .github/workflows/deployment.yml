@@ -1,76 +1,45 @@
-name: Deploy Project
-
+name: Deployment
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
-
+      - dev
+env:
+  MONGODB_DB_NAME: gha-demo
 jobs:
-  lint_and_test:
+  test:
+    env:
+      MONGODB_CLUSTER_ADDRESS: cl_name
+      MONGODB_USERNAME: pwd
+      MONGODB_DB_NAME: uname
+      PORT: 8888
+    environment: testing
     runs-on: ubuntu-latest
     steps:
-      - name: Get code
-        uses: actions/checkout@v7
+      - name: Get Code
+        uses: actions/checkout@v3
+      - name: Output information
+        run: |
+          echo "..."
+          echo "env"
+          echo "_______________"
+          echo "MONGODB_DB_NAME: ${{env.MONGODB_USERNAME}}"
       - name: Cache dependencies
-        uses: actions/cache@v6
+        uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+          key: npm-deps-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm ci
-      - name: Run lint
-        run: npm run lint
+      - name: Run server
+        run: npm start & npx wait-on http://127.0.0.1:${{env.PORT}}
       - name: Run tests
-        run: npm run test
-  build:
-    needs: lint_and_test
-    runs-on: ubuntu-latest
-    outputs:
-      js-runfile: ${{ steps.publ.outputs.data }}
-    steps:
-      - name: Get code
-        uses: actions/checkout@v7
-      - name: Cache dependencies
-        uses: actions/cache@v6
-        with:
-          path: ~/.npm
-          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        run: npm ci
-      - name: Build project
-        run: npm run build
-      - name: Server data
-        run: |
-          echo ">>>>>>>>"
-          pwd
-          whoami
-          ls -la
-          echo "<<<<<<<<"
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: dist-files
-          path: dist
-      - name: Publish JS filename
-        id: publ
-        run: find dist/assets -type f -name "*.js" -execdir echo 'data={}' >> $GITHUB_OUTPUT ';'
+        run: npm test
+
   deploy:
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Get artifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: dist-files
-      - name: Server data
+      - name: Output information
         run: |
-          echo ">>>>>>>>"
-          pwd
-          whoami
-          ls -la
-          echo "<<<<<<<<"
-      - name: Output filename
-        run: echo "${{ needs.build.outputs.js-runfile }}"
-      - name: Deploy
-        run: echo "Deployment......MAIN........"
+          echo "..."
