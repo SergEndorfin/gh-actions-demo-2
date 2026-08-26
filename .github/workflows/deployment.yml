@@ -11,7 +11,7 @@ jobs:
     env:
       MONGODB_CLUSTER_ADDRESS: cl_name
       MONGODB_USERNAME: pwd
-      MONGODB_DB_NAME: uname
+      MONGODB_DB_NAME: ${{secrets.MONGODB_DB_NAME}}
       PORT: 8888
     environment: testing
     runs-on: ubuntu-latest
