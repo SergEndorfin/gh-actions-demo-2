@@ -21,7 +21,7 @@ jobs:
       - name: Output information
         run: |
           echo "..."
-          echo "env"
+          env
           echo "_______________"
           echo "MONGODB_DB_NAME: ${{env.MONGODB_USERNAME}}"
       - name: Cache dependencies
