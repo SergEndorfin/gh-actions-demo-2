@@ -24,6 +24,7 @@ jobs:
           env
           echo "_______________"
           echo "MONGODB_DB_NAME: ${{env.MONGODB_DB_NAME}}"
+          echo "MONGODB_DB_NAME_2: ${{env.MONGODB_DB_NAME_2}}"
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
